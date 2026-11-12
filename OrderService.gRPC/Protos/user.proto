@@ -1,0 +1,69 @@
+// UserService.gRPC · contrato del servicio de Usuarios (Clase 1)
+// Misma base UserDB que UserService (REST): el contrato cambia, los datos no.
+syntax = "proto3";
+
+option csharp_namespace = "ECommerceGRPC.Users";
+
+package users.v1;
+
+service UserService {
+  // TODO 1 · Unary: un usuario por id (equivale a GET /api/users/{id}).
+  rpc GetUser (GetUserRequest) returns (UserReply);
+
+  // TODO 1 · Unary: crea un usuario (equivale a POST /api/users).
+  rpc CreateUser (CreateUserRequest) returns (UserReply);
+
+  // TODO 1 · Server streaming: un mensaje por usuario activo.
+  rpc ListUsers (ListUsersRequest) returns (stream UserReply);
+
+  // TODO 1 · Unary: desactiva un usuario (borrado lógico, IsActive = false).
+  rpc DeactivateUser (DeactivateUserRequest) returns (DeactivateUserReply);
+
+  // TODO 6 · Server streaming en tiempo real: un mensaje por cada usuario creado o desactivado.
+  rpc WatchUserEvents (WatchUserEventsRequest) returns (stream UserEvent);
+}
+
+// Ya viene escrito: la respuesta con los datos de un usuario.
+// Nunca lleva la contraseña ni su hash.
+message UserReply {
+  int32 id = 1;
+  string email = 2;
+  string name = 3;
+  string last_name = 4;
+  bool is_active = 5;
+  string created_at = 6;   // fecha y hora UTC, formato ISO 8601
+}
+
+// TODO 1 · mensajes de petición
+message GetUserRequest {
+  int32 id = 1;
+}
+
+message CreateUserRequest {
+  string email = 1;
+  string name = 2;
+  string last_name = 3;
+  string password = 4;     // se guarda solo su hash (BCrypt)
+}
+
+message ListUsersRequest {
+}
+
+message DeactivateUserRequest {
+  int32 id = 1;
+}
+
+message DeactivateUserReply {
+  bool success = 1;
+  string message = 2;
+}
+
+// TODO 6 · mensajes del streaming de eventos
+message WatchUserEventsRequest {
+}
+
+message UserEvent {
+  string type = 1;         // "CREATED" o "DEACTIVATED"
+  UserReply user = 2;
+  string occurred_at = 3;  // fecha y hora UTC, formato ISO 8601
+}

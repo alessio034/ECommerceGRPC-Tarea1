@@ -1,0 +1,10 @@
+<Solution>
+  <Project Path="ApiGateway.BFF/ApiGateway.BFF.csproj" />
+  <Project Path="Benchmark/Benchmark.csproj" />
+  <Project Path="CatalogService/CatalogService.csproj" />
+  <Project Path="ECommerce.Contracts/ECommerce.Contracts.csproj" />
+  <Project Path="OrderService.gRPC/OrderService.gRPC.csproj" />
+  <Project Path="ProductService.gRPC/ProductService.gRPC.csproj" />
+  <Project Path="UserService.gRPC/UserService.gRPC.csproj" />
+  <Project Path="UserService/UserService.csproj" />
+</Solution>

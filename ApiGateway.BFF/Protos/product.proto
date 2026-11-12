@@ -1,0 +1,68 @@
+// ProductService.gRPC · contrato del servicio de Productos (Clase 1)
+// Es el mismo catálogo de CatalogService (REST): misma base CatalogDB, otro protocolo.
+syntax = "proto3";
+
+option csharp_namespace = "ECommerceGRPC.Products";
+
+package products.v1;
+
+service ProductService {
+  // Unary: una petición, una respuesta. Equivale a GET /api/products/{id}.
+  rpc GetProduct (GetProductRequest) returns (ProductReply);
+
+  // Server streaming: una petición, varias respuestas, una por producto.
+  rpc ListProducts (ListProductsRequest) returns (stream ProductReply);
+
+  // Unary. Equivale a POST /api/products.
+  rpc CreateProduct (CreateProductRequest) returns (ProductReply);
+
+  // Unary. Cambia el stock y avisa a quien esté mirando ese producto (WatchStock).
+  rpc UpdateStock (UpdateStockRequest) returns (ProductReply);
+
+  // Server streaming en tiempo real: la respuesta queda abierta y envía
+  // un mensaje cada vez que cambia el stock del producto.
+  rpc WatchStock (WatchStockRequest) returns (stream StockUpdate);
+}
+
+message GetProductRequest {
+  int32 id = 1;
+}
+
+message ListProductsRequest {
+  string category = 1;   // vacío = todas las categorías
+}
+
+message CreateProductRequest {
+  string name = 1;
+  string description = 2;
+  double price = 3;      // proto3 no tiene decimal: el precio viaja como double
+  int32 stock = 4;
+  string category = 5;
+}
+
+message UpdateStockRequest {
+  int32 id = 1;
+  int32 stock = 2;
+}
+
+message WatchStockRequest {
+  int32 id = 1;
+}
+
+message ProductReply {
+  int32 id = 1;
+  string name = 2;
+  string description = 3;
+  double price = 4;
+  int32 stock = 5;
+  string category = 6;
+  bool is_active = 7;
+}
+
+message StockUpdate {
+  int32 id = 1;
+  string name = 2;
+  int32 old_stock = 3;
+  int32 new_stock = 4;
+  string changed_at = 5;  // fecha y hora UTC, formato ISO 8601
+}

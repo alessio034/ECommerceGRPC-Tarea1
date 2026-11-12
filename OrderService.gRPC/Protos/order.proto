@@ -1,0 +1,30 @@
+// OrderService.gRPC · contrato del servicio de Pedidos (Clase 2)
+// Valida un pedido preguntándoles a otros dos servicios gRPC: Usuarios y Productos.
+// No guarda nada todavía: crear y procesar pedidos llega con la mensajería (sesión 3).
+syntax = "proto3";
+
+option csharp_namespace = "ECommerceGRPC.Orders";
+
+package orders.v1;
+
+service OrderService {
+  // Unary. Revisa que el usuario exista y esté activo, y que cada producto
+  // exista y tenga stock suficiente. Devuelve el total si todo está bien.
+  rpc ValidateOrder (ValidateOrderRequest) returns (ValidateOrderReply);
+}
+
+message OrderItem {
+  int32 product_id = 1;
+  int32 quantity = 2;
+}
+
+message ValidateOrderRequest {
+  int32 user_id = 1;
+  repeated OrderItem items = 2;
+}
+
+message ValidateOrderReply {
+  bool is_valid = 1;
+  repeated string problems = 2;   // vacío si el pedido es válido
+  double total = 3;               // suma de precio × cantidad de los productos válidos
+}
